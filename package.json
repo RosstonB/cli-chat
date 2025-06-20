@@ -1,0 +1,24 @@
+{
+  "name": "cli-chat",
+  "version": "1.0.0",
+  "description": "",
+  "main": "client.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.4.1",
+    "dotenv": "^16.4.7",
+    "fs": "^0.0.1-security",
+    "mongodb": "^6.14.2",
+    "node-emoji": "^2.2.0",
+    "openai": "^4.86.1",
+    "readline": "^1.3.0",
+    "ws": "^8.18.1"
+  }
+}
