@@ -14,6 +14,10 @@ const rl = readline.createInterface({
 
 const socket = new WebSocket("ws://localhost:8080");
 
+socket.on("open", () => {
+  console.log(chalk.green("✅ Connected to WebSocket server!"));
+});
+
 let username = "";
 
 // Ask for a username first
@@ -23,10 +27,6 @@ rl.question(chalk.blue("Enter your username: "), (name) => {
   socket.send(username); // Send username to the server
   rl.setPrompt(chalk.yellow(`${username}: `));
   rl.prompt();
-});
-
-socket.on("open", () => {
-  console.log(chalk.green("✅ Connected to WebSocket server!"));
 });
 
 socket.on("message", (data) => {

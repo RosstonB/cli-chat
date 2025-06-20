@@ -1,5 +1,5 @@
 .env
-.env*
+
 chat.log
 node_modules/
 dist/
