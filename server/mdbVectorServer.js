@@ -41,8 +41,14 @@ server.on("connection", async (socket) => {
     const fullMessage = `${timestamp} ${username}: ${message}`;
     console.log(`💬 [CHAT] ${fullMessage}`);
 
-    // Store in MongoDB (without embedding for regular messages)
-    await chatCollection.insertOne({ username, message, timestamp });
+    // Check if message is to @bot and generate embedding if so
+    let embedding = null;
+    if (message.includes("@bot")) {
+      embedding = await getEmbedding(message);
+    }
+
+    // Store in MongoDB (with embedding only for @bot messages)
+    await chatCollection.insertOne({ username, message, timestamp, ...(embedding && { embedding }) });
 
     // Broadcast message to all clients
     clients.forEach((client) => {
@@ -59,9 +65,6 @@ server.on("connection", async (socket) => {
           .trim()}`
       );
 
-      // Generate embedding only for bot messages
-      const embedding = await getEmbedding(message);
-
       const relevantMessages = await retrieveRelevantMessages(embedding);
       const botResponse = await getAIResponse(
         message.replace("@bot", "").trim(),
@@ -69,10 +72,14 @@ server.on("connection", async (socket) => {
       );
       const botMessage = `${timestamp} 🤖 @bot: ${botResponse}`;
 
+      // Generate embedding for bot response
+      const botEmbedding = await getEmbedding(botResponse);
+
       await chatCollection.insertOne({
         username: "@bot",
         message: botResponse,
         timestamp,
+        embedding: botEmbedding,
       });
 
       clients.forEach((client) => client.send(botMessage));
